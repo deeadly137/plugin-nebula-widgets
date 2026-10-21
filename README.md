@@ -4,6 +4,8 @@ A configurable, shape-based analog clock for the Caelestia desktop. It is inspir
 desktop widgets in [Nebula](https://github.com/LilaccFlowerr/Nebula): a Material shape face,
 drawn hands and ticks, a date inside the face, and a draggable position.
 
+![Nebula Clock](preview.png)
+
 The plugin uses the `desktop-widget` entry point, so it sits above the wallpaper and below
 normal windows.
 
