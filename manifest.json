@@ -4,6 +4,13 @@
     "version": "0.1.0",
     "icon": "schedule",
     "description": "A configurable analog desktop clock inspired by Nebula's shape-based widgets.",
+    "tags": [
+        "desktop",
+        "widget",
+        "clock",
+        "analog"
+    ],
+    "banner": "preview.png",
     "settings": "settings.qml",
     "entryPoints": [
         {
