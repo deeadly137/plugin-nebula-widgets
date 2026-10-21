@@ -38,10 +38,10 @@ Item {
 
         width: root.widgetSize
         height: width
-        // Keep the visual position anchored to where the drag started. Writing settings.x/y
-        // during the drag updates restX/restY, which must not be added to the translation again.
-        x: drag.active ? root.dragOrigin.x + drag.translation.x : root.restX
-        y: drag.active ? root.dragOrigin.y + drag.translation.y : root.restY
+        // The position is driven entirely by settings. The drag handler updates settings.x/y
+        // from a captured origin, so restX/restY always contain the live, clamped position.
+        x: root.restX
+        y: root.restY
         opacity: Math.max(0.2, Math.min(1, settings.opacity))
 
         Behavior on width {
