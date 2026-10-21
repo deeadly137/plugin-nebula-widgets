@@ -18,6 +18,7 @@ Item {
     readonly property var colors: palette(settings.colour)
     readonly property real restX: settings.x >= 0 ? Math.max(0, Math.min(settings.x, width - widgetSize)) : (width - widgetSize) / 2
     readonly property real restY: settings.y >= 0 ? Math.max(0, Math.min(settings.y, height - widgetSize)) : (height - widgetSize) / 2
+    property point dragOrigin: Qt.point(0, 0)
 
     function palette(role: string): var {
         switch (role) {
@@ -37,8 +38,10 @@ Item {
 
         width: root.widgetSize
         height: width
-        x: root.restX + (drag.active ? drag.translation.x : 0)
-        y: root.restY + (drag.active ? drag.translation.y : 0)
+        // Keep the visual position anchored to where the drag started. Writing settings.x/y
+        // during the drag updates restX/restY, which must not be added to the translation again.
+        x: drag.active ? root.dragOrigin.x + drag.translation.x : root.restX
+        y: drag.active ? root.dragOrigin.y + drag.translation.y : root.restY
         opacity: Math.max(0.2, Math.min(1, settings.opacity))
 
         Behavior on width {
@@ -63,9 +66,15 @@ Item {
 
             onActiveChanged: {
                 if (active)
+                    root.dragOrigin = Qt.point(root.restX, root.restY);
+            }
+
+            onTranslationChanged: {
+                if (!active)
                     return;
-                const nx = root.restX + drag.translation.x;
-                const ny = root.restY + drag.translation.y;
+
+                const nx = root.dragOrigin.x + translation.x;
+                const ny = root.dragOrigin.y + translation.y;
                 root.settings.x = Math.round(Math.max(0, Math.min(root.width - clock.width, nx)));
                 root.settings.y = Math.round(Math.max(0, Math.min(root.height - clock.height, ny)));
             }
