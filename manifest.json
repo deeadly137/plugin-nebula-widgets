@@ -1,0 +1,14 @@
+{
+    "name": "NebulaClock",
+    "author": "deeadly137",
+    "version": "0.1.0",
+    "icon": "schedule",
+    "description": "A configurable analog desktop clock inspired by Nebula's shape-based widgets.",
+    "settings": "settings.qml",
+    "entryPoints": [
+        {
+            "type": "desktop-widget",
+            "source": "NebulaClock.qml"
+        }
+    ]
+}
