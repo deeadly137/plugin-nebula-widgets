@@ -78,7 +78,7 @@ ColumnLayout {
 
                 StyledSwitch {
                     checked: row.cfg.enabled === true
-                    onToggled: Widgets.update(row.modelData, { enabled: row.cfg.enabled !== true })
+                    onToggled: Widgets.update(row.modelData, { enabled: checked })
                 }
             }
         }
