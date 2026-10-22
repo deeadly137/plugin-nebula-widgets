@@ -16,6 +16,7 @@
         "nebula"
     ],
     "banner": "preview.png",
+    "settings": "settings.qml",
     "entryPoints": [
         {
             "type": "desktop-widget",

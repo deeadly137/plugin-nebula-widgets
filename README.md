@@ -13,8 +13,10 @@ the desktop stays clickable.
 ## Usage
 
 - Add, enable or remove widgets in **Nexus → Wallpaper & style → Widgets**, next to *Colours*.
-- Hover the bottom-left corner for a quick widget list and **Add widget** shortcut.
+- Hover the bottom-left corner for a quick widget list and **Add widget** shortcut. Turn it off with
+  the **Corner widget list** switch in **Nexus → System → Plugins → NebulaWidgets**.
 - Right-click a widget to change its shape, size, colour, opacity, or source. Drag it to move it.
+- GIF and APNG images animate inside their shape.
 - Image widgets have a folder button for choosing a picture. Text widgets have an inline editor.
 - The calendar expands when clicked; use its arrows or scroll to change months.
 - Widget positions and settings are saved to `${XDG_STATE_HOME:-~/.local/state}/caelestia/nebulawidgets.json`.

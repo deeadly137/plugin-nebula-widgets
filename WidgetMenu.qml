@@ -95,7 +95,7 @@ StyledWindow {
 
         title: "Select an image"
         filterLabel: "Image files"
-        filters: Images.validImageExtensions
+        filters: Images.validImageExtensions.concat(["gif", "apng"])
 
         onAccepted: path => {
             if (window.imageTarget !== "")

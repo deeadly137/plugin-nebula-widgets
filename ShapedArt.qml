@@ -3,7 +3,8 @@ import QtQuick.Effects
 import M3Shapes
 import qs.components.controls
 
-// An image clipped to a Material shape, with simple cover/pan controls.
+// An image clipped to a Material shape, with simple cover/pan controls. Animated images (GIF and
+// friends) use AnimatedImage so they keep playing inside the shape.
 Item {
     id: root
 
@@ -17,13 +18,15 @@ Item {
     property real panX: 0
     property real panY: 0
 
-    readonly property real aspect: image.implicitHeight > 0 ? image.implicitWidth / image.implicitHeight : 1
+    readonly property bool animated: /\.(gif|apng|mng)$/i.test(String(root.source).split("?")[0])
+    readonly property real aspect: media.implicitHeight > 0 ? media.implicitWidth / media.implicitHeight : 1
     readonly property real coverWidth: width * zoom * Math.max(1, aspect)
     readonly property real coverHeight: height * zoom * Math.max(1, 1 / aspect)
     readonly property real rangeX: Math.max(0, (coverWidth - width) / 2)
     readonly property real rangeY: Math.max(0, (coverHeight - height) / 2)
-    readonly property bool loading: image.status === Image.Loading
-    readonly property bool hasImage: image.status === Image.Ready
+    readonly property Item media: root.animated ? animatedImage : image
+    readonly property bool loading: media.status === Image.Loading
+    readonly property bool hasImage: media.status === Image.Ready
 
     implicitWidth: 56
     implicitHeight: 56
@@ -62,11 +65,26 @@ Item {
             height: root.coverHeight
             x: -root.rangeX * (1 + root.panX)
             y: -root.rangeY * (1 + root.panY)
-            source: root.source
+            source: root.animated ? "" : root.source
             sourceSize: root.sourceSize
             fillMode: Image.PreserveAspectCrop
             asynchronous: true
             cache: false
+        }
+
+        AnimatedImage {
+            id: animatedImage
+
+            width: root.coverWidth
+            height: root.coverHeight
+            x: -root.rangeX * (1 + root.panX)
+            y: -root.rangeY * (1 + root.panY)
+            source: root.animated ? root.source : ""
+            sourceSize: root.sourceSize
+            fillMode: Image.PreserveAspectCrop
+            asynchronous: true
+            cache: false
+            playing: root.animated
         }
     }
 
