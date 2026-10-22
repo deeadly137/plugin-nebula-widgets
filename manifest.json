@@ -1,21 +1,25 @@
 {
-    "name": "NebulaClock",
+    "name": "NebulaWidgets",
     "author": "deeadly137",
-    "version": "0.1.0",
-    "icon": "schedule",
-    "description": "A configurable analog desktop clock inspired by Nebula's shape-based widgets.",
+    "version": "0.2.0",
+    "icon": "widgets",
+    "description": "Shape-based desktop widgets inspired by Nebula: clock, calendar, battery, images, and notes.",
     "tags": [
         "desktop",
         "widget",
         "clock",
-        "analog"
+        "calendar",
+        "battery",
+        "image",
+        "text",
+        "notes",
+        "nebula"
     ],
     "banner": "preview.png",
-    "settings": "settings.qml",
     "entryPoints": [
         {
             "type": "desktop-widget",
-            "source": "NebulaClock.qml"
+            "source": "NebulaWidgets.qml"
         }
     ]
 }
