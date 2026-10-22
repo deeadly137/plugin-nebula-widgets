@@ -33,44 +33,29 @@ Item {
 
     readonly property string topHover: hovering.reduce((best, id) => best === "" || stackOf(id) > stackOf(best) ? id : best, "")
 
-    property Region boundsMask: Region { item: bounds }
     property Region fullMask: Region {
         width: window.width
         height: window.height
     }
-    readonly property Region inputMask: Region {
-        regions: window.dragging ? [window.fullMask] : [window.boundsMask]
-    }
-
-    function updateBounds(): void {
-        let left = Infinity;
-        let top = Infinity;
-        let right = -Infinity;
-        let bottom = -Infinity;
+    // One region per visible widget, so the gaps between widgets stay click-through.
+    readonly property list<Region> slotMasks: {
+        const revision = maskRevision; // Re-evaluate when a slot moves, resizes, or loads
+        const masks = [];
         for (let i = 0; i < repeater.count; i++) {
-            const item = repeater.itemAt(i);
-            if (!item || !item.active)
-                continue;
-            left = Math.min(left, item.x);
-            top = Math.min(top, item.y);
-            right = Math.max(right, item.x + item.width);
-            bottom = Math.max(bottom, item.y + item.height);
+            const loader = repeater.itemAt(i);
+            if (loader?.active && loader.widgetMask)
+                masks.push(loader.widgetMask);
         }
-        if (left === Infinity) {
-            bounds.x = 0;
-            bounds.y = 0;
-            bounds.width = 0;
-            bounds.height = 0;
-            return;
-        }
-        bounds.x = left;
-        bounds.y = top;
-        bounds.width = right - left;
-        bounds.height = bottom - top;
+        return revision >= 0 ? masks : [];
+    }
+    property int maskRevision: 0
+
+    readonly property Region inputMask: Region {
+        regions: window.dragging ? [window.fullMask] : window.slotMasks
     }
 
-    Item {
-        id: bounds
+    function refreshMasks(): void {
+        maskRevision++;
     }
 
     Component {
@@ -139,8 +124,8 @@ Item {
         id: repeater
 
         model: Widgets.idModel
-        onItemAdded: window.updateBounds()
-        onItemRemoved: window.updateBounds()
+        onItemAdded: window.refreshMasks()
+        onItemRemoved: window.refreshMasks()
 
         Loader {
             id: slot
@@ -158,6 +143,7 @@ Item {
             readonly property bool isTop: window.topHover === modelData
             readonly property real offX: ghost ? 0 : ((cfg.size ?? width) - width) / 2
             readonly property real offY: ghost ? 0 : ((cfg.size ?? height) - height) / 2
+            readonly property var widgetMask: slotMask
 
             z: cfg.z ?? 0
             opacity: cfg.opacity ?? 1
@@ -167,13 +153,19 @@ Item {
             width: item?.implicitWidth ?? 0
             height: item?.implicitHeight ?? 0
 
-            onActiveChanged: window.updateBounds()
-            onXChanged: window.updateBounds()
-            onYChanged: window.updateBounds()
-            onWidthChanged: window.updateBounds()
-            onHeightChanged: window.updateBounds()
+            onActiveChanged: window.refreshMasks()
+            onXChanged: window.refreshMasks()
+            onYChanged: window.refreshMasks()
+            onWidthChanged: window.refreshMasks()
+            onHeightChanged: window.refreshMasks()
 
             sourceComponent: cfg.type === "image" ? imageWidget : cfg.type === "text" ? textWidget : cfg.type === "clock" ? clockWidget : cfg.type === "calendar" ? calendarWidget : cfg.type === "battery" ? batteryWidget : null
+
+            Region {
+                id: slotMask
+
+                item: slot
+            }
 
             HoverHandler {
                 enabled: !slot.ghost
