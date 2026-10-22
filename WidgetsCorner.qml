@@ -21,13 +21,34 @@ StyledWindow {
     Tokens.screen: screen?.name ?? ""
 
     name: "widget-corner"
-    implicitWidth: 480
+    // Wide enough for the open panel (margin + width + flare); only the panel area is masked while
+    // open, so keep the surface tight around it.
+    implicitWidth: 344
     implicitHeight: 480
     anchors.bottom: true
     anchors.left: true
     exclusionMode: ExclusionMode.Ignore
     color: "transparent"
-    mask: Region { item: hitArea }
+
+    // Swap between two regions instead of resizing one: the input region is reapplied on every
+    // mask object change, which is what the widget menu does and what the compositor follows
+    // reliably while the panel animates open.
+    mask: window.open ? winMask : hotMask
+
+    Region {
+        id: winMask
+
+        width: window.width
+        height: window.height
+    }
+
+    Region {
+        id: hotMask
+
+        y: window.height - window.hotHeight
+        width: window.hotWidth
+        height: window.hotHeight
+    }
 
     WlrLayershell.layer: WlrLayer.Overlay
 
@@ -38,7 +59,6 @@ StyledWindow {
 
     readonly property color fill: Qt.alpha(Colours.tPalette.m3surface, 0.85)
     readonly property int rowHeight: 44
-    readonly property int windowSize: 480
     readonly property int margin: 24
     readonly property int hotWidth: 300
     readonly property int hotHeight: 10
@@ -73,31 +93,21 @@ StyledWindow {
         onTriggered: window.open = false
     }
 
-    readonly property real targetWidth: open ? openWidth : hotWidth - flare * 2
-    readonly property real targetHeight: open ? content.implicitHeight + Tokens.spacing.large * 2 : 0
+    HoverHandler {
+        id: hover
 
-    Item {
-        id: hitArea
-
-        anchors.left: blob.left
-        anchors.leftMargin: -window.flare
-        anchors.bottom: parent.bottom
-        width: Math.max(window.hotWidth, window.targetWidth + window.flare * 2)
-        height: Math.max(window.hotHeight, window.targetHeight)
-
-        HoverHandler {
-            id: hover
-
-            onHoveredChanged: {
-                if (hovered) {
-                    closeTimer.stop();
-                    window.open = true;
-                } else {
-                    closeTimer.restart();
-                }
+        onHoveredChanged: {
+            if (hovered) {
+                closeTimer.stop();
+                window.open = true;
+            } else {
+                closeTimer.restart();
             }
         }
     }
+
+    readonly property real targetWidth: open ? openWidth : hotWidth - flare * 2
+    readonly property real targetHeight: open ? content.implicitHeight + Tokens.spacing.large * 2 : 0
 
     Rectangle {
         id: blob

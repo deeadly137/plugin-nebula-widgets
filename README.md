@@ -12,7 +12,8 @@ the desktop stays clickable.
 
 ## Usage
 
-- Hover the bottom-left corner to open the widget list. Press **Add widget** to add one.
+- Add, enable or remove widgets in **Nexus → Wallpaper & style → Widgets**, next to *Colours*.
+- Hover the bottom-left corner for a quick widget list and **Add widget** shortcut.
 - Right-click a widget to change its shape, size, colour, opacity, or source. Drag it to move it.
 - Image widgets have a folder button for choosing a picture. Text widgets have an inline editor.
 - The calendar expands when clicked; use its arrows or scroll to change months.
