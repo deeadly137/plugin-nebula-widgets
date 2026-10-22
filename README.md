@@ -21,8 +21,8 @@ the desktop stays clickable.
 
 ## Requirements
 
-- A plugin-enabled Caelestia Shell build with the `desktop-widget` entry point, such as
-  `caelestia-shell-plugins-git`.
+- A plugin-enabled Caelestia Shell build with the `desktop-widget` entry point and `page-extension`
+  sub-pages (2.5.0.r104 or newer), such as `caelestia-shell-plugins-git`.
 - `qt6-m3shapes-git` (already required by the shell).
 
 ## Install
